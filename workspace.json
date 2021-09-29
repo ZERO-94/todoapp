@@ -1,0 +1,60 @@
+{
+  "version": 2,
+  "projects": {
+    "todoapp-backend": {
+      "root": "apps/todoapp-backend",
+      "sourceRoot": "apps/todoapp-backend/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/todoapp-backend",
+            "main": "apps/todoapp-backend/src/main.ts",
+            "tsConfig": "apps/todoapp-backend/tsconfig.app.json",
+            "assets": ["apps/todoapp-backend/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/todoapp-backend/src/environments/environment.ts",
+                  "with": "apps/todoapp-backend/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "todoapp-backend:build"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["apps/todoapp-backend/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/todoapp-backend"],
+          "options": {
+            "jestConfig": "apps/todoapp-backend/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/nest"
+  },
+  "defaultProject": "todoapp-backend"
+}
