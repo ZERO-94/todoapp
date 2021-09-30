@@ -9,15 +9,18 @@ import { UserDocument } from './entities/user.entity';
 export class UserService {
   constructor(@InjectModel('User') private userModel: Model<UserDocument>) {}
   create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+    const createdUser = new this.userModel(createUserDto);
+    return createdUser.save();
   }
 
   findAll() {
     return `This action returns all user`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(username: string): Promise<any> {
+    const result = await this.userModel.findOne({ user_name: username }).exec();
+    const userInformation = await result.toJSON();
+    return userInformation;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
