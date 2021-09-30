@@ -5,6 +5,9 @@
 /tmp
 /out-tsc
 
+# .env files
+/apps/todoapp-backend/.env
+
 # dependencies
 /node_modules
 
