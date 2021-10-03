@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -10,11 +10,14 @@ export class UserService {
   constructor(@InjectModel('User') private userModel: Model<UserDocument>) {}
   create(createUserDto: CreateUserDto) {
     const createdUser = new this.userModel(createUserDto);
+    const matchedUser = this.findOne(createdUser.user_name);
+    if (matchedUser) throw new BadRequestException('EXISTED_USER_NAME');
     return createdUser.save();
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll() {
+    const result = await this.userModel.find({}).exec();
+    return result;
   }
 
   async findOne(username: string): Promise<any> {
@@ -23,11 +26,15 @@ export class UserService {
     return userInformation;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(userId: string, updateUserDto: UpdateUserDto): Promise<any> {
+    const result = await this.userModel
+      .updateOne({ _id: userId }, updateUserDto)
+      .exec();
+    return result;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(userId: string): Promise<any> {
+    const result = await this.userModel.remove({ _id: userId }).exec();
+    return result;
   }
 }
